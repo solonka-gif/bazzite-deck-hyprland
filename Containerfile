@@ -9,7 +9,6 @@ RUN rpm-ostree install \
     hyprland \
     kitty \
     fish \
-    starship \
     swww \
     rofi-wayland \
     brightnessctl \
