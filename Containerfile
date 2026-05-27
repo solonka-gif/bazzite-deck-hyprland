@@ -1,11 +1,10 @@
 # Базируемся на стабильном Bazzite с KDE для Steam Deck
 FROM ghcr.io/ublue-os/bazzite-deck:stable
 
-# Включаем главный COPR репозиторий для Hyprland и готового AGS
-RUN dnf copr enable -y solopasha/hyprland && \
-    dnf copr enable -y kylegospo/bazzite
+# Включаем главный COPR репозиторий для Hyprland на Fedora
+RUN dnf copr enable -y solopasha/hyprland
 
-# Устанавливаем Hyprland, готовый AGS и все утилиты окружения
+# Устанавливаем только проверенные системные пакеты
 RUN rpm-ostree install \
     hyprland \
     kitty \
@@ -20,7 +19,6 @@ RUN rpm-ostree install \
     google-noto-sans-cjk-fonts \
     google-noto-color-emoji-fonts \
     jetbrains-mono-fonts \
-    aylurs-gtk-shell \
     git
 
 # Копируем системные службы автоматического входа в TTY (из репозитория автора)
