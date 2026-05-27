@@ -1,7 +1,10 @@
 # Базируемся на стабильном Bazzite с KDE для Steam Deck
 FROM ghcr.io/ublue-os/bazzite-deck:stable
 
-# Устанавливаем Hyprland, утилиты для Steam Deck и ЗАВИСИМОСТИ для сборки AGS
+# Включаем главный COPR репозиторий для Hyprland на Fedora
+RUN dnf copr enable -y solopasha/hyprland
+
+# Устанавливаем всё необходимое софтверное наполнение
 RUN rpm-ostree install \
     hyprland \
     kitty \
@@ -9,19 +12,17 @@ RUN rpm-ostree install \
     starship \
     swww \
     rofi-wayland \
-    wvkbd \
     brightnessctl \
     wlogout \
     grim \
     slurp \
     wl-clipboard \
-    networkmanager-openvpn \
     google-noto-sans-cjk-fonts \
     google-noto-color-emoji-fonts \
     jetbrains-mono-fonts \
     typescript npm meson gjs-devel gtk3-devel gtk-layer-shell gnome-bluetooth upower pulseaudio-libs-devel libdbusmenu-gtk3 libsoup3 git
 
-# Собираем и устанавливаем AGS (Aylur's GTK Shell) из исходников
+# Скачиваем, собираем и ставим AGS (Aylur's GTK Shell) из исходников для Caelestia
 RUN git clone --recursive https://github.com/Aylur/ags.git /tmp/ags && \
     cd /tmp/ags && \
     meson setup build && \
