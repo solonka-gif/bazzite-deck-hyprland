@@ -1,17 +1,12 @@
-
 # Базируемся на стабильном Bazzite с KDE для Steam Deck
 FROM ghcr.io/ublue-os/bazzite-deck:stable
 
-# Включаем сторонний репозиторий COPR для установки AGS (нужен для Caelestia)
-RUN dnf copr enable -y jgoguen/ags
-
-# Устанавливаем Hyprland, зависимости Caelestia и утилиты для Steam Deck
+# Устанавливаем Hyprland, утилиты для Steam Deck и ЗАВИСИМОСТИ для сборки AGS
 RUN rpm-ostree install \
     hyprland \
     kitty \
     fish \
     starship \
-    ags \
     swww \
     rofi-wayland \
     wvkbd \
@@ -23,7 +18,16 @@ RUN rpm-ostree install \
     networkmanager-openvpn \
     google-noto-sans-cjk-fonts \
     google-noto-color-emoji-fonts \
-    jetbrains-mono-fonts
+    jetbrains-mono-fonts \
+    typescript npm meson gjs-devel gtk3-devel gtk-layer-shell gnome-bluetooth upower pulseaudio-libs-devel libdbusmenu-gtk3 libsoup3 git
+
+# Собираем и устанавливаем AGS (Aylur's GTK Shell) из исходников
+RUN git clone --recursive https://github.com/Aylur/ags.git /tmp/ags && \
+    cd /tmp/ags && \
+    meson setup build && \
+    meson compile -C build && \
+    meson install -C build && \
+    rm -rf /tmp/ags
 
 # Копируем системные службы автоматического входа в TTY (из репозитория автора)
 COPY hyprdose-tty-autologin.service /etc/systemd/system/hyprdose-tty-autologin.service
@@ -34,3 +38,4 @@ RUN systemctl enable hyprdose-tty-autologin.service
 
 # Обновляем метаданные системы
 RUN rpm-ostree cleanup -m && ostree container commit
+
