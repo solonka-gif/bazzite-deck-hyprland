@@ -21,9 +21,12 @@ RUN rpm-ostree install \
     jetbrains-mono-fonts \
     git
 
-# Копируем системные службы автоматического входа в TTY (из репозитория автора)
-COPY hyprdose-tty-autologin.service /etc/systemd/system/hyprdose-tty-autologin.service
-COPY hyprdose-autologin /usr/bin/hyprdose-autologin
+# Создаем скрипт автологина напрямую внутри образа
+RUN echo -e '#!/usr/bin/bash\nif [ "$(tty)" = "/dev/tty1" ]; then\n    exec dbus-run-session Hyprland\nfi' > /usr/bin/hyprdose-autologin && \
+    chmod +x /usr/bin/hyprdose-autologin
+
+# Создаем системную службу напрямую внутри образа
+RUN echo -e '[Unit]\nDescription=Hyprdose TTY Autologin\nAfter=systemd-user-sessions.service plymouth-quit-active.service\nBefore=getty.target\n\n[Service]\nType=simple\nExecStart=-/usr/sbin/agetty --autologin deck --noclear tty1 $TERM\nUtmpIdentifier=tty1\nUtmpSystemName=tty1\nStandardInput=tty\nStandardOutput=tty\nTTYPath=/dev/tty1\nTTYReset=yes\nTTYVHangup=yes\n\n[Install]\nWantedBy=multi-user.target' > /etc/systemd/system/hyprdose-tty-autologin.service
 
 # Активируем службу автоматического входа
 RUN systemctl enable hyprdose-tty-autologin.service
