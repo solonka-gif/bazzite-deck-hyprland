@@ -19,7 +19,7 @@ RUN rpm-ostree install \
     google-noto-sans-cjk-fonts \
     google-noto-color-emoji-fonts \
     jetbrains-mono-fonts \
-    typescript npm meson gjs-devel gtk3-devel gtk-layer-shell gnome-bluetooth upower pulseaudio-libs-devel libdbusmenu-gtk3 libsoup3 git
+    typescript npm meson gjs-devel gtk3-devel gtk-layer-shell gnome-bluetooth upower pulseaudio-libs-devel libdbusmenu-gtk3 libsoup3 git golang
 
 # Скачиваем, собираем и ставим AGS (Aylur's GTK Shell) из исходников для Caelestia
 RUN git clone --recursive https://github.com/Aylur/ags.git /tmp/ags && \
