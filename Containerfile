@@ -1,14 +1,12 @@
 # Базируемся на стабильном Bazzite с KDE для Steam Deck
 FROM ghcr.io/ublue-os/bazzite-deck:stable
 
-# Включаем COPR репозитории: для Hyprland и официальный для AGS
-RUN dnf copr enable -y solopasha/hyprland && \
-    dnf copr enable -y primus/aylurs-gtk-shell
+# Включаем главный COPR репозиторий для Hyprland
+RUN dnf copr enable -y solopasha/hyprland
 
-# Устанавливаем проверенные системные пакеты + AGS
+# Устанавливаем все нужные пакеты (без AGS, его соберем локально)
 RUN rpm-ostree install \
     hyprland \
-    aylurs-gtk-shell \
     kitty \
     fish \
     swww \
@@ -25,4 +23,3 @@ RUN rpm-ostree install \
 
 # Обновляем метаданные системы
 RUN rpm-ostree cleanup -m && ostree container commit
-
